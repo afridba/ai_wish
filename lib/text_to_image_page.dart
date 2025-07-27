@@ -20,7 +20,7 @@ class _TextToImagePageState extends State<TextToImagePage> {
     final backendUrl = dotenv.env['BACKEND_URL'];
     if (backendUrl == null || backendUrl.isEmpty) {
       setState(() {
-        _error = "Backend URL not found. Please check your .env file.";
+        _error = "❌ BACKEND_URL not found in .env file.";
       });
       return;
     }
@@ -28,7 +28,7 @@ class _TextToImagePageState extends State<TextToImagePage> {
     final prompt = _promptController.text.trim();
     if (prompt.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter a prompt.")),
+        const SnackBar(content: Text("⚠️ Please enter a prompt.")),
       );
       return;
     }
@@ -54,12 +54,12 @@ class _TextToImagePageState extends State<TextToImagePage> {
         });
       } else {
         setState(() {
-          _error = data['error'] ?? 'Image generation failed.';
+          _error = data['error'] ?? '⚠️ Image generation failed.';
         });
       }
     } catch (e) {
       setState(() {
-        _error = 'Something went wrong. Please try again.';
+        _error = '⚠️ Something went wrong. Please try again.';
       });
     } finally {
       setState(() {
@@ -77,28 +77,31 @@ class _TextToImagePageState extends State<TextToImagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Text to Image')),
+      appBar: AppBar(
+        title: const Text('🎨 Text to Image Generator'),
+        centerTitle: true,
+      ),
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 TextField(
                   controller: _promptController,
                   decoration: const InputDecoration(
-                    labelText: 'Enter a prompt',
+                    labelText: 'Enter a prompt...',
                     border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.text_fields),
                   ),
                   textInputAction: TextInputAction.done,
                 ),
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _generateImage,
-                    child: const Text('Generate Image'),
-                  ),
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  onPressed: _isLoading ? null : _generateImage,
+                  icon: const Icon(Icons.image),
+                  label: const Text('Generate Image'),
                 ),
                 const SizedBox(height: 20),
                 if (_error != null)
@@ -110,11 +113,14 @@ class _TextToImagePageState extends State<TextToImagePage> {
                   Column(
                     children: [
                       const Text(
-                        "Generated Image:",
+                        "✅ Generated Image:",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 10),
-                      Image.network(_imageUrl!),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(_imageUrl!),
+                      ),
                     ],
                   ),
               ],
@@ -123,9 +129,7 @@ class _TextToImagePageState extends State<TextToImagePage> {
           if (_isLoading)
             Container(
               color: Colors.black.withOpacity(0.5),
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
+              child: const Center(child: CircularProgressIndicator()),
             ),
         ],
       ),

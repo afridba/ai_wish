@@ -10,11 +10,17 @@ import 'screens/settings_page.dart';
 import 'background_remover_screen.dart';
 import 'enhance_photo_page.dart';
 import 'screens/chatbot_page.dart';
-import 'screens/onboarding_screen.dart'; // Onboarding screen
+import 'screens/onboarding_screen.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    debugPrint("Error loading .env file: $e");
+  }
+
   runApp(const MyApp());
 }
 
