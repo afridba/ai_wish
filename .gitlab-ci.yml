@@ -1,0 +1,9 @@
+# .gitlab-ci.yml
+stages:
+  - test
+
+my_test_job:
+  stage: test
+  script:
+    - echo "Hello from GitLab CI!"
+    - date # Run a simple command
